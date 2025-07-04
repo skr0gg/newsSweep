@@ -1,0 +1,51 @@
+# 🧠 newsSweep — Phase 1: High-Level Architecture
+
+## 🧭 System Overview
+
+newsSweep is a modular, CLI-first AI system that:
+- Crawls public data sources (APIs, RSS, .gov, .org, social media)
+- Applies geofencing (~40 km radius around Slidell, LA)
+- Summarizes and synthesizes data using open-source NLP models
+- Outputs readable, localized bulletins (like a hyperlocal newspaper)
+- Runs entirely from local environments (no cloud, no paid APIs)
+
+## 🧩 Core Modules
+
+1. **CLI Interface (`src/cli/`)**
+   - Entry point for all commands
+   - Manages flags, arguments, and task orchestration
+
+2. **Data Ingestion (`src/ingest/`)**
+   - Crawls RSS feeds, public APIs, and static HTML
+   - Uses `requests`, `aiohttp`, `feedparser`, `beautifulsoup4`
+
+3. **Geofencing (`src/geofence/`)**
+   - Filters data based on ~40 km radius from Slidell
+   - Uses `geopy`, `shapely`, and reverse geocoding
+
+4. **NLP Summarization (`src/summarize/`)**
+   - Summarizes text using HuggingFace Transformers, spaCy, NLTK
+   - Applies sentiment analysis (VADER) and topic modeling
+
+5. **Output Renderer (`src/output/`)**
+   - Formats bulletins as Markdown, HTML, or plaintext
+   - Uses `jinja2`, `markdown`, `html2text`
+
+## 🔁 Data Flow
+
+[ CLI ] ↓ [ Ingestion ] → [ Geofencing ] → [ NLP Summarization ] → [ Output ]
+
+
+## 🔐 Security & DevSecOps
+
+- Pre-commit hooks: Bandit, Semgrep, Gitleaks
+- Optional Linux hardening: AppArmor, UFW, auditd
+- GitHub CLI for repo management
+- No cloud dependencies or browser workflows
+
+## 🧪 CLI Workflow Example
+
+# Crawl and summarize local news
+newsSweep ingest --feeds config/feeds.yaml
+newsSweep summarize --input data_raw/ --output data_processed/
+newsSweep render --format markdown --output output/bulletin.md
